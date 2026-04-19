@@ -13,9 +13,14 @@ import psycopg2
 from dotenv import load_dotenv
 from pathlib import Path
 
+# Load .env file if it exists (for local development)
+# On Render, environment variables are injected directly
 load_dotenv(dotenv_path=Path(__file__).parent.parent / ".env")
 
 DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL environment variable is not set!")
 
 
 def get_connection():
