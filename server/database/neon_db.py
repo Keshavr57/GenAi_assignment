@@ -25,7 +25,8 @@ if not DATABASE_URL:
 # Remove channel_binding parameter if present (not supported by psycopg2-binary 2.9.11)
 if "channel_binding=" in DATABASE_URL:
     import re
-    DATABASE_URL = re.sub(r'[&?]channel_binding=[^&]*', '', DATABASE_URL)
+    # Remove &channel_binding=... but keep other parameters
+    DATABASE_URL = re.sub(r'&channel_binding=[^&]*', '', DATABASE_URL)
     print("⚠️  Removed unsupported channel_binding parameter from DATABASE_URL")
 
 
