@@ -22,6 +22,12 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     raise ValueError("DATABASE_URL environment variable is not set!")
 
+# Remove channel_binding parameter if present (not supported by psycopg2-binary 2.9.11)
+if "channel_binding=" in DATABASE_URL:
+    import re
+    DATABASE_URL = re.sub(r'[&?]channel_binding=[^&]*', '', DATABASE_URL)
+    print("⚠️  Removed unsupported channel_binding parameter from DATABASE_URL")
+
 
 def get_connection():
     """Return a fresh psycopg2 connection to NeonDB."""
