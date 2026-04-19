@@ -1,0 +1,36 @@
+# render.yaml
+# Deploys two services on Render:
+#   1. cbse-tutor-server  — FastAPI backend  (Web Service)
+#   2. cbse-tutor-client  — Streamlit frontend (Web Service)
+#
+# Set the following environment variables in Render dashboard:
+#   DATABASE_URL   — Your NeonDB connection string
+#   GORQ_API_KEY   — Your Groq API key
+#   BACKEND_URL    — URL of the deployed server (set on client service)
+
+services:
+  # ── FastAPI Backend ─────────────────────────────────────────────────────────
+  - type: web
+    name: cbse-tutor-server
+    runtime: python
+    rootDir: server
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: GORQ_API_KEY
+        sync: false
+    autoDeploy: true
+
+  # ── Streamlit Frontend ──────────────────────────────────────────────────────
+  - type: web
+    name: cbse-tutor-client
+    runtime: python
+    rootDir: client
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0
+    envVars:
+      - key: BACKEND_URL
+        sync: false      # Set this to your server's Render URL, e.g. https://cbse-tutor-server.onrender.com
+    autoDeploy: true
