@@ -22,12 +22,17 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     raise ValueError("DATABASE_URL environment variable is not set!")
 
+# Debug: Print the URL (mask password)
+import re
+masked_url = re.sub(r'://([^:]+):([^@]+)@', r'://\1:****@', DATABASE_URL)
+print(f"🔍 DATABASE_URL: {masked_url}")
+
 # Remove channel_binding parameter if present (not supported by psycopg2-binary 2.9.11)
 if "channel_binding=" in DATABASE_URL:
-    import re
-    # Remove &channel_binding=... but keep other parameters
     DATABASE_URL = re.sub(r'&channel_binding=[^&]*', '', DATABASE_URL)
-    print("⚠️  Removed unsupported channel_binding parameter from DATABASE_URL")
+    print("⚠️  Removed channel_binding parameter")
+    masked_url = re.sub(r'://([^:]+):([^@]+)@', r'://\1:****@', DATABASE_URL)
+    print(f"🔍 After cleanup: {masked_url}")
 
 
 def get_connection():
