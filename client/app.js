@@ -210,324 +210,136 @@ function toggleSidebar(show) {
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
-// Demo Response Generator
+// Demo Response Generator with Real Q&A Matching
 // ──────────────────────────────────────────────────────────────────────────────
 
-function generateDemoResponse(question, subject) {
-    const subj = subject !== "All Subjects" ? subject : "General";
+function findBestMatch(question, subject) {
+    const subj = subject !== "All Subjects" ? subject : null;
     
-    // Detect question type
-    const isMath = question.toLowerCase().includes('solve') || 
-                   question.toLowerCase().includes('prove') || 
-                   question.toLowerCase().includes('find') ||
-                   question.toLowerCase().includes('calculate') ||
-                   subj === "Mathematics";
+    // If subject is selected, search only in that subject
+    const searchSubjects = subj ? [subj] : ["Mathematics", "Science", "English", "SST"];
     
-    const isScience = question.toLowerCase().includes('explain') || 
-                      question.toLowerCase().includes('state') ||
-                      question.toLowerCase().includes('describe') ||
-                      subj === "Science";
+    let bestMatch = null;
+    let highestScore = 0;
     
-    const isEnglish = question.toLowerCase().includes('write') || 
-                      question.toLowerCase().includes('letter') ||
-                      question.toLowerCase().includes('poem') ||
-                      subj === "English";
-    
-    // Generate appropriate response
-    if (isMath) {
-        return {
-            answer: `## 📌 Quick Concept
-*${question}*
-
-This question tests your understanding of fundamental mathematical concepts and problem-solving skills.
-
----
-
-## 📝 Board-Exam Answer
-
-**Given:** ${question}
-
-**Step 1:** Identify the given information and what needs to be found
-
-Let's break down the problem systematically:
-- First, we analyze the given data
-- Then, we identify the appropriate formula or theorem
-
-**Step 2:** Apply the relevant formula
-
-For this type of problem, we use:
-\`\`\`
-Formula: [Relevant mathematical formula]
-\`\`\`
-
-**Step 3:** Substitute values and solve
-
-Substituting the given values:
-- Calculation step 1
-- Calculation step 2
-- Final result with proper units
-
-**[DIAGRAM: Draw a neat labeled diagram showing the geometric representation]**
-
-**Answer:** The final result is **[calculated value]** with appropriate units.
-
----
-
-## ✅ Topper's Strategy
-
-> **Chapter/Topic:** ${subj}
-> **Typical Marks:** 3-4 marks
-> **Marks Breakdown:**
-> - Correct formula — 1 mark
-> - Substitution of values — 1 mark
-> - Calculation steps — 1 mark
-> - Final answer with units — 1 mark
-
-**What toppers do differently:**
-- Always write the formula first before substituting
-- Show ALL working steps clearly
-- Draw diagrams wherever applicable
-- Write the final answer in a box or underline it
-- Don't forget units in the final answer
-
----
-
-## 💡 Remember for Exam
-
-- Practice similar problems from NCERT Exercise and Examples
-- Remember key formulas and theorems
-- Time management: Spend 3-4 minutes on 3-mark questions`,
-            sources: ["NCERT Class 10 Mathematics", "Solved Paper 2024", "Exemplar Problems"],
-            subject: subj
-        };
-    } else if (isScience) {
-        return {
-            answer: `## 📌 Quick Concept
-*${question}*
-
-This question requires a clear explanation with scientific reasoning and proper terminology.
-
----
-
-## 📝 Board-Exam Answer
-
-**${question}**
-
-**Definition:**
-The concept can be defined as [clear, concise definition using NCERT terminology].
-
-**Explanation:**
-
-1. **Key Point 1:** Detailed explanation of the first aspect
-   - Supporting detail
-   - Scientific reasoning
-
-2. **Key Point 2:** Explanation of the second aspect
-   - Chemical/Physical process involved
-   - Real-world application
-
-3. **Key Point 3:** Additional important information
-   - Observations or characteristics
-   - Significance in daily life
-
-**[DIAGRAM: Draw a neat labeled diagram showing the process/structure]**
-
-**Example:**
-A practical example to illustrate the concept:
-- Real-world scenario
-- How the principle applies
-
-**Conclusion:**
-Summary statement reinforcing the main concept.
-
----
-
-## ✅ Topper's Strategy
-
-> **Chapter/Topic:** ${subj}
-> **Typical Marks:** 3-5 marks
-> **Marks Breakdown:**
-> - Definition — 1 mark
-> - Explanation with points — 2-3 marks
-> - Diagram (if required) — 1 mark
-> - Example/Application — 1 mark
-
-**What toppers do differently:**
-- Start with a clear definition from NCERT
-- Use bullet points or numbering for clarity
-- Include well-labeled diagrams
-- Mention real-life applications
-- Use scientific terminology correctly
-
----
-
-## 💡 Remember for Exam
-
-- Underline key terms and definitions
-- Practice drawing diagrams neatly
-- Learn chemical equations and formulas
-- Revise NCERT intext questions and exercises`,
-            sources: ["NCERT Class 10 Science", "Solved Paper 2023", "Lab Manual"],
-            subject: subj
-        };
-    } else if (isEnglish) {
-        return {
-            answer: `## 📌 Quick Concept
-*${question}*
-
-This question tests your writing skills, comprehension, and ability to express ideas clearly.
-
----
-
-## 📝 Board-Exam Answer
-
-**${question}**
-
-**Format to follow:**
-
-[Sender's Address]
-[Date]
-
-[Receiver's Address]
-
-Subject: [Clear, concise subject line]
-
-Salutation,
-
-**Opening Paragraph:**
-Introduce the purpose of your writing clearly and politely.
-
-**Body Paragraph 1:**
-- Main point or argument
-- Supporting details
-- Relevant examples
-
-**Body Paragraph 2:**
-- Additional information
-- Further explanation
-- Logical flow of ideas
-
-**Closing Paragraph:**
-Conclude with a polite request or summary of your main points.
-
-Thanking you,
-Yours sincerely/faithfully,
-[Name]
-
----
-
-**OR (For Literature Questions):**
-
-**Theme/Central Idea:**
-The main theme of the text is [explanation of the central message].
-
-**Analysis:**
-- **Point 1:** Literary device or character analysis
-- **Point 2:** Significance of events or symbols
-- **Point 3:** Author's message or moral
-
-**Conclusion:**
-The text effectively conveys [summary of the message].
-
----
-
-## ✅ Topper's Strategy
-
-> **Chapter/Topic:** ${subj}
-> **Typical Marks:** 5-8 marks
-> **Marks Breakdown:**
-> - Format/Structure — 1-2 marks
-> - Content/Ideas — 2-3 marks
-> - Expression/Grammar — 1-2 marks
-> - Coherence — 1 mark
-
-**What toppers do differently:**
-- Follow the exact format prescribed
-- Use formal/appropriate language
-- Organize ideas in clear paragraphs
-- Check grammar and spelling
-- Write neatly and legibly
-
----
-
-## 💡 Remember for Exam
-
-- Practice different formats (letter, article, notice, etc.)
-- Read sample answers from previous years
-- Maintain word limit (usually 100-150 words)
-- Leave proper margins and spacing`,
-            sources: ["NCERT Class 10 English", "Solved Paper 2024", "Writing Skills Guide"],
-            subject: subj
-        };
-    } else {
-        // General/SST response
-        return {
-            answer: `## 📌 Quick Concept
-*${question}*
-
-This question requires analytical thinking and understanding of key concepts.
-
----
-
-## 📝 Board-Exam Answer
-
-**${question}**
-
-**Introduction:**
-Brief introduction to the topic providing context.
-
-**Main Points:**
-
-**1. First Major Point**
-   - Detailed explanation
-   - Historical context or significance
-   - Impact or consequences
-
-**2. Second Major Point**
-   - Supporting information
-   - Examples or case studies
-   - Connections to other concepts
-
-**3. Third Major Point**
-   - Additional analysis
-   - Contemporary relevance
-   - Critical evaluation
-
-**[MAP/DIAGRAM: If applicable, draw a labeled map or flowchart]**
-
-**Conclusion:**
-Summarize the key points and their overall significance.
-
----
-
-## ✅ Topper's Strategy
-
-> **Chapter/Topic:** ${subj}
-> **Typical Marks:** 3-5 marks
-> **Marks Breakdown:**
-> - Introduction — 1 mark
-> - Main points (3-4 points) — 2-3 marks
-> - Conclusion — 1 mark
-
-**What toppers do differently:**
-- Structure answers with clear headings
-- Use point-wise format for clarity
-- Include relevant dates, names, and facts
-- Draw maps/diagrams where required
-- Connect concepts across chapters
-
----
-
-## 💡 Remember for Exam
-
-- Revise NCERT thoroughly - most questions are direct
-- Practice map work regularly
-- Remember key dates and events
-- Use flowcharts for complex processes`,
-            sources: ["NCERT Class 10 " + subj, "Solved Paper 2024", "Previous Year Papers"],
-            subject: subj
-        };
+    for (const searchSubj of searchSubjects) {
+        const qaList = DEMO_QA_DATABASE[searchSubj] || [];
+        
+        for (const qa of qaList) {
+            // Calculate similarity score
+            const score = calculateSimilarity(question.toLowerCase(), qa.q.toLowerCase());
+            
+            if (score > highestScore) {
+                highestScore = score;
+                bestMatch = {
+                    answer: qa.a,
+                    sources: [
+                        `NCERT Class 10 ${searchSubj}`,
+                        "Solved Paper 2024",
+                        "Solved Paper 2023"
+                    ],
+                    subject: searchSubj
+                };
+            }
+        }
     }
+    
+    // If good match found (score > 0.3), return it
+    if (bestMatch && highestScore > 0.3) {
+        return bestMatch;
+    }
+    
+    // Otherwise return generic response
+    return generateGenericResponse(question, subj || "General");
+}
+
+function calculateSimilarity(str1, str2) {
+    // Simple word matching algorithm
+    const words1 = str1.split(/\s+/);
+    const words2 = str2.split(/\s+/);
+    
+    let matchCount = 0;
+    for (const word1 of words1) {
+        if (word1.length < 3) continue; // Skip small words
+        for (const word2 of words2) {
+            if (word1.includes(word2) || word2.includes(word1)) {
+                matchCount++;
+                break;
+            }
+        }
+    }
+    
+    return matchCount / Math.max(words1.length, words2.length);
+}
+
+function generateGenericResponse(question, subject) {
+    return {
+        answer: `## 📌 Quick Concept
+*${question}*
+
+This is a demonstration of the CBSE Smart Tutor interface.
+
+---
+
+## 📝 Board-Exam Answer
+
+**Question:** ${question}
+
+In the full version with backend connected, you would receive:
+
+1. **Detailed Answer:** Complete board-exam-ready answer with step-by-step explanation
+2. **Relevant Content:** Retrieved from NCERT textbooks and solved papers (2013-2025)
+3. **AI-Generated:** Powered by Groq LLaMA-3.3-70B for accurate responses
+
+**Try these sample questions to see real demo answers:**
+
+**Mathematics:**
+- Prove that √2 is irrational
+- Solve 2x² - 7x + 3 = 0 using quadratic formula
+- Find HCF of 96 and 404 using Euclid's algorithm
+
+**Science:**
+- State and explain Ohm's Law with derivation
+- Explain the process of photosynthesis
+- What is the difference between mitosis and meiosis?
+
+**English:**
+- Write a letter to the Principal requesting leave
+- Explain the theme of the poem Fire and Ice
+
+**SST:**
+- What were the causes of the French Revolution?
+- Explain the concept of federalism in India
+
+---
+
+## ✅ Topper's Strategy
+
+> **Chapter/Topic:** ${subject}
+> **Typical Marks:** 3-5 marks
+
+**What toppers do differently:**
+- Read the question carefully and identify keywords
+- Structure answers with clear headings
+- Include diagrams where applicable
+- Show all working steps
+- Use proper terminology from NCERT
+
+---
+
+## 💡 Remember for Exam
+
+- Practice previous year papers regularly
+- Revise NCERT thoroughly
+- Time management is crucial
+- Write neat and legible answers
+
+---
+
+*Try the sample questions above to see detailed demo answers!*`,
+        sources: [`NCERT Class 10 ${subject}`, "Demo Mode"],
+        subject: subject
+    };
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -620,8 +432,8 @@ async function handleSend() {
     // DEMO MODE - Generate dummy response
     if (!BACKEND_URL) {
         setTimeout(() => {
-            // Generate dynamic response based on question
-            const dummyResponse = generateDemoResponse(text, currentSubject);
+            // Find best matching Q&A from database
+            const dummyResponse = findBestMatch(text, currentSubject);
             
             const t1 = performance.now();
             const elapsed = ((t1 - t0)/1000).toFixed(1);
