@@ -2,7 +2,8 @@
 // client/app.js - Vanilla JS Logic for CBSE Tutor
 // ──────────────────────────────────────────────────────────────────────────────
 
-const BACKEND_URL = "http://localhost:8000";
+// Set to null to use DEMO MODE with dummy data
+const BACKEND_URL = null; // Change to your backend URL when ready
 
 // State
 let currentSubject = "All Subjects";
@@ -69,6 +70,13 @@ marked.setOptions({
 // ──────────────────────────────────────────────────────────────────────────────
 
 async function checkHealth() {
+    if (!BACKEND_URL) {
+        // DEMO MODE
+        statusIndicator.className = "status-indicator online";
+        statusText.textContent = "Demo Mode (No Backend)";
+        return;
+    }
+    
     try {
         const res = await fetch(`${BACKEND_URL}/health`);
         if(res.ok) {
@@ -84,6 +92,34 @@ async function checkHealth() {
 }
 
 async function fetchStats() {
+    if (!BACKEND_URL) {
+        // DEMO MODE - Dummy stats
+        const dummyStats = [
+            { subject: "Mathematics", chunks: 1250 },
+            { subject: "Science", chunks: 980 },
+            { subject: "English", chunks: 750 },
+            { subject: "SST", chunks: 620 }
+        ];
+        
+        const total = dummyStats.reduce((acc, curr) => acc + curr.chunks, 0);
+        statsTotal.textContent = `${total.toLocaleString()} indexed chunks`;
+        
+        statsList.innerHTML = dummyStats.map(s => {
+            const pct = Math.round((s.chunks / total) * 100) || 0;
+            return `
+            <div class="stat-item">
+                <div class="stat-header">
+                    <span class="stat-subject">${s.subject}</span>
+                    <span class="stat-count">${s.chunks.toLocaleString()}</span>
+                </div>
+                <div class="stat-bar-bg">
+                    <div class="stat-bar-fill" style="width: ${pct}%"></div>
+                </div>
+            </div>`;
+        }).join('');
+        return;
+    }
+    
     try {
         const res = await fetch(`${BACKEND_URL}/stats`);
         const data = await res.json();
@@ -259,6 +295,25 @@ async function handleSend() {
     isGenerating = true;
 
     const t0 = performance.now();
+    
+    // DEMO MODE - Generate dummy response
+    if (!BACKEND_URL) {
+        setTimeout(() => {
+            const dummyResponse = {
+                answer: `## 📌 Quick Concept\n*This is a demo response showing how the CBSE Smart Tutor works.*\n\n---\n\n## 📝 Board-Exam Answer\n\nYour question: **"${text}"**\n\nThis is a **demonstration mode** with dummy data. In the full version:\n\n1. **Step 1**: Your question is embedded using AI models\n2. **Step 2**: Similar content is retrieved from NCERT textbooks and solved papers (2013-2025)\n3. **Step 3**: Groq LLaMA-3.3-70B generates a complete board-exam-ready answer\n\n**Key Points:**\n- Detailed explanations with formulas\n- Step-by-step working for Math/Science\n- Marks breakdown for each part\n- Topper strategies and exam tips\n\n---\n\n## ✅ Topper's Strategy\n\n> **Chapter/Topic:** ${currentSubject !== "All Subjects" ? currentSubject : "General"}\n> **Typical Marks:** 3-5 marks\n> **Marks Breakdown:**\n> - Concept explanation — 2 marks\n> - Example/Application — 2 marks\n> - Diagram (if needed) — 1 mark\n\n**What toppers do differently:**\n- Write clear, structured answers\n- Include diagrams where applicable\n- Show all working steps\n- Use proper terminology from NCERT\n\n---\n\n## 💡 Remember for Exam\n\n- Always read the question carefully and identify keywords\n- Practice previous year papers for pattern recognition\n- Time management is crucial in board exams\n\n---\n\n*Connect the backend API to get real AI-powered answers!*`,
+                sources: ["NCERT Class 10", "Solved Paper 2024", "Solved Paper 2023"],
+                subject: currentSubject !== "All Subjects" ? currentSubject : "General"
+            };
+            
+            const t1 = performance.now();
+            const elapsed = ((t1 - t0)/1000).toFixed(1);
+            updateAIMessage(aiWrapper, dummyResponse, elapsed);
+            isGenerating = false;
+            sendBtn.disabled = (chatInput.value.trim() === '');
+        }, 1500); // Simulate API delay
+        return;
+    }
+
     try {
         const res = await fetch(`${BACKEND_URL}/ask`, {
             method: 'POST',
