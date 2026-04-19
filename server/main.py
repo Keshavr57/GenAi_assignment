@@ -33,10 +33,14 @@ async def lifespan(app: FastAPI):
     import os
     print("\n🚀 CBSE Smart Tutor API — Starting up...")
     setup_database()
-    if os.getenv("SKIP_INGESTION") != "true":
+    
+    # Always skip ingestion on Render to speed up deployment
+    skip_ingestion = os.getenv("SKIP_INGESTION", "true").lower() == "true"
+    
+    if not skip_ingestion:
         ingest_all_pdfs()
     else:
-        print("⏭️  Skipping PDF ingestion (SKIP_INGESTION=true) — Using existing NeonDB data.")
+        print("⏭️  Skipping PDF ingestion — Using existing NeonDB data.")
     print("🎓 API is ready to serve students!\n")
     yield
     print("👋 Server shutting down.")
