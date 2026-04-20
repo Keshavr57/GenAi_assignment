@@ -34,7 +34,7 @@ async def lifespan(app: FastAPI):
     print("\n🚀 CBSE Smart Tutor API — Starting up...")
     setup_database()
     
-    # Always skip ingestion on Render to speed up deployment
+    # Already populated DB from local — keep 'true' for stability on Render
     skip_ingestion = os.getenv("SKIP_INGESTION", "true").lower() == "true"
     
     if not skip_ingestion:

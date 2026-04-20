@@ -386,7 +386,7 @@
 | **Database** | NeonDB (PostgreSQL + pgvector) | Vector storage & search |
 | **Embeddings** | Sentence Transformers (all-MiniLM-L6-v2) | Text to vector conversion |
 | **LLM** | Groq LLaMA 3.3-70B | Answer generation |
-| **PDF Processing** | PyPDF2 | Document parsing |
+| **PDF Processing** | PyPDF2 | Document parsing |de
 | **Deployment** | Render.com + Netlify | Cloud hosting |
 
 ---
