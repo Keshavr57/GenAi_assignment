@@ -3,7 +3,7 @@
 // ──────────────────────────────────────────────────────────────────────────────
 
 // Set to null to use DEMO MODE with dummy data
-const BACKEND_URL = null; // Change to your backend URL when ready
+const BACKEND_URL = "https://genai-assignment-xpw8.onrender.com"; // Change to your backend URL when ready
 
 // State
 let currentSubject = "All Subjects";
